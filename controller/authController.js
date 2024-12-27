@@ -35,9 +35,6 @@ export const registerController = async (req, res) => {
   }
 };
 
-
-import bcrypt from 'bcryptjs'; // Import bcrypt for comparing hashed passwords
-
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
