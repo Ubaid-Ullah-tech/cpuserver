@@ -1,6 +1,5 @@
 import userModel from "../models/userModel.js"
-import JWT from "jsonwebtoken";
- export const registerController = async (req, res) => {
+export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
 
@@ -32,6 +31,7 @@ import JWT from "jsonwebtoken";
   }
 };
 
+
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -53,7 +53,7 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Check if the password matches (stored as plain text)
+    // Compare plain-text passwords
     if (user.password !== password) {
       return res.status(401).send({
         success: false,
@@ -88,6 +88,9 @@ export const loginController = async (req, res) => {
     });
   }
 };
+
+
+
 
 // export const registerController = async(req,res)=>{
 
