@@ -1,7 +1,6 @@
 import userModel from "../models/userModel.js"
-import bcrypt from 'bcryptjs'; // Import bcrypt for hashing passwords
-
-export const registerController = async (req, res) => {
+import JWT from "jsonwebtoken";
+  export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
 
@@ -10,13 +9,11 @@ export const registerController = async (req, res) => {
       return res.status(400).send({ success: false, message: "All fields are required." });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds for hashing
-
+    // Save user without hashing the password
     const user = new userModel({
       name,
       email,
-      password: hashedPassword, // Save hashed password
+      password, // Store password as plain text (not recommended)
       phone,
       address,
       answer,
@@ -56,9 +53,8 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Compare the provided password with the stored hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    // **Compare plain-text passwords**
+    if (user.password !== password) {
       return res.status(401).send({
         success: false,
         message: "Invalid password.",
