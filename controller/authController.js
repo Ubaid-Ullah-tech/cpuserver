@@ -1,4 +1,6 @@
 import userModel from "../models/userModel.js"
+import bcrypt from 'bcryptjs'; // Import bcrypt for hashing passwords
+
 export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
@@ -8,11 +10,13 @@ export const registerController = async (req, res) => {
       return res.status(400).send({ success: false, message: "All fields are required." });
     }
 
-    // Save user without hashing the password
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds for hashing
+
     const user = new userModel({
       name,
       email,
-      password, // Store password as plain text (not recommended)
+      password: hashedPassword, // Save hashed password
       phone,
       address,
       answer,
@@ -31,6 +35,8 @@ export const registerController = async (req, res) => {
   }
 };
 
+
+import bcrypt from 'bcryptjs'; // Import bcrypt for comparing hashed passwords
 
 export const loginController = async (req, res) => {
   try {
@@ -53,8 +59,9 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Compare plain-text passwords
-    if (user.password !== password) {
+    // Compare the provided password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).send({
         success: false,
         message: "Invalid password.",
@@ -88,6 +95,7 @@ export const loginController = async (req, res) => {
     });
   }
 };
+
 
 
 
