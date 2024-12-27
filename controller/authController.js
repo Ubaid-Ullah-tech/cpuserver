@@ -32,6 +32,8 @@ export const registerController = async (req, res) => {
 };
 
 
+import userModel from "../models/userModel.js";
+
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -61,11 +63,6 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Generate token (optional)
-    const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
     res.status(200).send({
       success: true,
       message: "Login successful.",
@@ -77,7 +74,6 @@ export const loginController = async (req, res) => {
         address: user.address,
         role: user.role,
       },
-      token,
     });
   } catch (error) {
     console.error(error);
